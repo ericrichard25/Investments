@@ -1,0 +1,109 @@
+{% extends "website/summarizer.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'website/css/user.css' %}">
+{% endblock %}
+        
+{% block content %}
+<h5>Update User: {{ user.first_name }} {{ user.last_name }}</h5>
+<div class="user_container_form">
+    {% if messages  %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}  
+
+<!-- update user form -->
+    <form action="{% url 'update_user' id=user.id %}" method="post">
+        {% csrf_token %}
+        <table>
+            <thead></thead>
+            <tbody>
+                <tr>
+                    <td><label for="first_name">First Name</label></td>
+                    <td><input type="text" name="first_name" value={{ user.first_name }}></td>
+                    <td><label for="last_name">Last Name</label>
+                    </td>
+                    <td><input type="text" name="last_name" value={{ user.last_name }}>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="email">Email</label>
+                    </td>
+                    <td><input type="text" name="email" value={{ user.email }}></td>
+                    <td><label for="phone">Phone</label>
+                    </td>
+                    <td><input type="text" name="phone" value="{{ user.phone }}"></td>
+                    <td><label for="permission">Permission</label>
+                    </td>
+                    <td><select name="permission">
+                        <option value={{ user.permission }}>{{ user.permission }}</option>
+                        {% for permission in permissions %}
+                            {% ifequal permission user.permission %}
+                                <!-- display nothing -->
+                            {% else %}
+                            <option value={{ permission }}>{{ permission }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="password">Password (.)</label>
+                    </td>
+                    <td><input type="text" name="password"></td>
+                    <td><label for="confirm_pw">Confirm PW (.)</label></td>
+                    </td>
+                    <td><input type="text" name="confirm_pw" id="confirm_pw">
+                    </td>
+                </tr>
+                <tr>
+                    <td><button type="submit">Update User</button>
+                    </td>
+                </form>
+<!-- end update user form -->
+<!--delete user form -->
+                    <td>
+                        <form action="{% url 'delete_user' id=user.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Delete User</button>
+                        </form>
+                    </td>
+<!-- end delete user form -->
+                </tr>
+            </tbody>
+        </table>
+</div>
+<div class="container center borders">
+    <h6 class="center block">Analyster Archive</h6>
+    <table class="table table-sm table-striped">
+        <thead>
+            <tr>
+                <th>Stock</th>
+                <th>Archiver</th>
+                <th>Date Archived</th>
+                <th>Date Assigned</th>
+                <th>Date Presented</th>
+                <th>Decision</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for archive in archives %}
+                <tr>
+                    <td><a href="{% url 'symbol' symbol=archive.symbol.symbol %}">{{ archive.symbol.symbol }}</a></td>
+                    <td>{{ archive.archiver.first_name }} {{ archive.archiver.last_name }}</td>
+                    <td>{{ archive.created_at }}</td>
+                    <td>{{ archive.date_assigned }}</td>
+                    <td>{{ archive.date_presented }}</td>
+                    <td>{{ archive.decision }}</td>
+                    <td>{{ archive.notes }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

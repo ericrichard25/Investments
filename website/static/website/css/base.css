@@ -1,0 +1,127 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    /* border: 1px solid red; */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+    padding: 3% 3% 0% 3%;
+}
+
+/* general css classes */
+
+.block{
+    display: block;
+}
+
+.center{
+    text-align:center;
+}
+
+.container{
+    padding: 1%;
+    margin: 1% auto;
+}
+
+.italic{
+    font-style: italic;
+}
+
+.borders{
+    border: 1px solid black;
+}
+
+.messages{
+    color: red;
+}
+
+.postive_return{
+    color: green;
+}
+
+.negative_return{
+    color: red;
+}
+
+/* header css */
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 3%;
+}
+
+.header_left{
+    font-size: 35px;
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.header_right{
+    font-size: 8px;
+    color: inherit;
+    text-align: right;
+}
+
+.header_right a{
+    display: block;
+    margin-right: 0%;
+    text-decoration: none;
+}
+
+.logo{
+    width: 10%;
+}
+
+.navbar{
+    font-size: 18px;
+    width: 100%;
+    padding: 2%;
+    border: solid;
+    border-width: 1px 0px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.navbar a{
+    text-decoration: none;
+    color: inherit;
+}
+
+/* main content css */
+
+.main{
+    padding-top: 2%;
+    padding-bottom: 5%;
+    display: flex;
+    justify-content: space-evenly;
+    height: 100%;
+    margin-bottom: auto;
+    flex: 1 0 auto;
+}
+
+/* footer css */
+
+.navbar_footer{
+    font-size: 10px;
+    overflow: auto;
+    margin: 20% 0px 0px 0px;
+    padding: 0px;
+    background-color: #37383b;
+    color: silver;
+    width: 100%;
+    margin: 0% auto 0% auto;
+    min-height: 40px;
+    line-height: 40px;
+}
+
+.footer a{
+    text-decoration: none;
+    color: inherit;
+}
+

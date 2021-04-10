@@ -1,0 +1,11 @@
+1. Yahoo Finance Rapid API
+    # yahoo_finance_rapid_api . . . need it for consensus PT which yfinance does not fetch
+    # json = Stock.objects.yahoo_finance_rapid_api(symbol)
+    # quoteResponse_result_0 = json['quoteResponse']['result'][0]
+
+2. yfinance
+
+3. IEX Cloud
+- $9/month
+    data = Stock.objects.iex_cloud(symbol)
+

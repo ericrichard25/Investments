@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Investments</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% load bootstrap4 %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'website/css/base.css' %}">
+        {% block styles %}
+        {% endblock %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <div class="header">
+            <a href="{% url 'index' %}" class="header_left">Investments</a>
+            <div class="header_right">
+                <!-- <img class="logo" src="{% static 'website/images/logo.png' %}"> -->
+                <p>Logo</p>
+                <h6><a href="{% url 'login_page' %}">Log In</a></h6>
+            </div>
+        </div>
+        <!-- <div class="container"> -->
+            <nav class="navbar navbar-expand-sm">
+                <a href="{% url 'index' %}">About</a>
+                <a href="{% url 'investing_philosophy' %}">Investing Philosophy</a>
+                <a href="{% url 'performance' %}">Performance</a>
+                <a href="{% url 'internships' %}">Internships</a>
+                <a href="{% url 'contact' %}">Contact</a>
+            </nav>
+        <!-- </div>     -->
+        <div class="main">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div class="container">
+            <nav class="navbar navbar_footer navbar-expand-sm">
+                <a href="{% url 'index' %}"> Investments</a>
+                <a href="{% url 'index' %}">About</a>
+                <a href="{% url 'investing_philosophy' %}">Investing Philosophy</a>
+                <a href="{% url 'performance' %}">Performance</a>
+                <a href="{% url 'internships' %}">Internships</a>
+                <a href="{% url 'contact' %}">Contact</a>
+            </nav>
+        </div>
+        <script type="text/javascript" src="{% static 'website/js/script.js' %}"></script>
+    </body>
+</html>

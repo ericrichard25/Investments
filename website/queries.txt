@@ -1,0 +1,55 @@
+
+// start Top Idea objects
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="SCPH"), weight="3", publication_date="2021-01-08", publication_price="6.30", peak_date="2021-02-15", peak_price="7.20", peak_return="14", days="38", years="0.1", annualized_return="261")
+
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="AKBA"), weight="3", publication_date="2020-09-15", publication_price="2.87", peak_date="2021-02-15", peak_price="4.62", peak_return="61", days="153", years="0.4", annualized_return="211")
+
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="OBSV"), weight="3", publication_date="2020-05-06", publication_price="3.50", peak_date="2021-02-15", peak_price="3.91", peak_return="12", days="285", years="0.8", annualized_return="15")
+
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="VCEL"), weight="3", publication_date="2020-03-31", publication_price="9.72", peak_date="2021-02-15", peak_price="50.68", peak_return="421", days="321", years="0.9", annualized_return="554")
+
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="AMSC"), weight="3", publication_date="2020-03-05", publication_price="6.57", peak_date="2021-01-07", peak_price="30.06", peak_return="358", days="308", years="0.8", annualized_return="506")
+
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="FENC"), weight="3", publication_date="2020-02-13", publication_price="8.12", peak_date="2021-02-15", peak_price="8.05", peak_return="-1", days="368", years="1.0", annualized_return="-1")
+
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="SPPI"), weight="3", publication_date="2019-08-14", publication_price="8.25", peak_date="2021-02-15", peak_price="3.63", peak_return="-56", days="551", years="1.5", annualized_return="-42")
+
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="OMER"), weight="3", publication_date="2020-07-15", publication_price="14.70", peak_date="2021-02-15", peak_price="22.28", peak_return="52", days="581", years="1.6", annualized_return="30")
+
+Top_Idea.objects.create(symbol=Stock.objects.get(symbol="SVVC"), weight="3", publication_date="2019-02-05", publication_price="14.05", peak_date="2021-02-15", peak_price="7.20", peak_return="-49", days="741", years="2.0", annualized_return="-28")
+// end Top Idea objects
+
+User.objects.create(first_name="Eric", last_name="Egana", email="eric.egana@yahoo.com", password="1", permission="administrator")
+
+Quintile.objects.create(quintile=1, weight=0.05)
+Quintile.objects.create(quintile=2, weight=0.04)
+Quintile.objects.create(quintile=3, weight=0.03)
+Quintile.objects.create(quintile=4, weight=0.02)
+Quintile.objects.create(quintile=5, weight=0.01)
+Quintile.objects.create(quintile="pass", weight=0)
+
+a = Stock.objects.get(id=260)
+a.quintile = Quintile.objects.get(id=1)
+a.save()
+
+a = Stock.objects.get(id=261)
+a.quintile = Quintile.objects.get(id=2)
+a.save()
+
+a = Stock.objects.get(id=262)
+a.quintile = Quintile.objects.get(id=3)
+a.save()
+
+a = Stock.objects.get(id=263)
+a.quintile = Quintile.objects.get(id=4)
+a.save()
+
+a = Stock.objects.get(id=264)
+a.quintile = Quintile.objects.get(id=5)
+a.save()
+
+a = Stock.objects.get(id=265)
+a.quintile = Quintile.objects.get(id=1)
+a.save()
+
+Assignment.objects.create(analyst_id=18, symbol_id=4)

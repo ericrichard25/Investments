@@ -1,0 +1,181 @@
+{% extends "website/summarizer.html" %}
+{% load humanize %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'website/css/symbol.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="main_upper borders container">
+<div class="chart center borders">
+    <p>stock chart</p>
+</div>
+<div class="data borders">
+    <ul class="none">
+        <li>Symbol: {{ stock.symbol }}</li>
+        <li>Name: {{ data.longName }}</li>
+        <li>Market Cap: ${{ market_cap }}M</li>
+        <li>Price: ${{ data.regularMarketPrice | floatformat:2 }}</li>
+        <li>Forward EPS: ${{ data.forwardEps | floatformat:2 }}</li>
+        <li>Forward PE: {{ data.forwardPE | floatformat:1 }}x</li>
+        <li>Earnings Date: {{ earnings_date }}</li>
+    </ul>
+</div>
+</div>
+{% if messages  %}
+<ul class="messages">
+    {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<!-- start form     -->
+<form action="{% url 'update_stock' symbol=stock.symbol %}" method="post">
+    {% csrf_token %}
+        <!-- start fields -->
+    <div class="fields borders container">
+        <table class="table table-striped table-sm">
+            <thead></thead>
+            <tbody>
+                <tr>
+                    <td>First PT: $</td>
+                    <td><input type="text" value={{ stock.first_pt }} name="first_pt"></td>
+                    <td>Consensus PT: ${{ quoteResponse_result_0.targetPriceMean | floatformat:2 }}</td>
+                    <td>Analyst:</td>
+                    <td><select name="analyst_id">
+                        <option value={{ stock.assigned.analyst.id }}>{{ stock.assigned.analyst.first_name }} {{ stock.assigned.analyst.last_name }}</option>
+                            {% for analyst in analysts %}
+                                {% ifequal analyst stock.assigned.analyst %}
+                                    <!-- skip assigned analyst -->
+                                    {% else %}
+                                <option value={{ analyst.id }}>{{ analyst.first_name}} {{ analyst.last_name }}</option>
+                                {% endifequal %}
+                                {% endfor %}
+                        </select>
+                    </td>
+                    <td>Quintile:</td>
+                    <td><select name="quintile_id">
+                        <option value={{ stock.quintile.id }}>{{ stock.quintile }}</option>
+                        {% for quintile in quintiles %}
+                            {% ifequal quintile stock.quintile %}
+                                <!-- display nothing -->
+                            {% else %}
+                                <option value={{ quintile.id }}>{{ quintile.quintile }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                    </select>
+                </td>
+                    <td>Weight:</td>
+                    <td>{{ stock.weight }}%</td>
+                </tr>
+                <tr>
+                    <td>First Upside:</td>
+                    <td>{{ stock.first_upside | floatformat:0 }}%</td>
+                    <td>Consensus Upside:</td>
+                    <td>{{ stock.consensus_upside | floatformat:0 }}%</td>
+                    <td></td>
+                    <td></td>
+                    <td>Buy Price: $</td>
+                    <td><input value={{ stock.buy_price }} name="buy_price"></td>
+                </tr>
+                <tr>
+                    <td>Last Update: {{ stock.updated_at }}</td>
+                    <td>Last Price: $</td>
+                    <td></td>
+                    <td>Analysis Date: {{ stock.created_at }}</td>
+                    <td>Analysis Price: ${{ stock.analysis_price }}</td>
+                    <td>Priority: <select name="priority">
+                        <option value={{ stock.assigned.priority }}>{{ stock.assigned.priority }}</option>
+                        {% for priority in priorities %}
+                            {% ifequal priority stock.assigned.priority %}
+                                <!-- display nothing -->
+                            {% else %}
+                                <option value={{ priority }}>{{ priority }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                    </select>
+                </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- end fields -->
+    <button class="save" type="submit">Save</button>
+
+        <div class="text container center borders">
+        <textarea class="summary" name="summary">{{ stock.summary }}</textarea>
+        <!-- pass hidden inputs for price and consensus PT to calculate upside -->
+        <input type="hidden" name="price" value={{ data.regularMarketPrice | floatformat:2 }}>
+        <input type="hidden" name="consensus_pt" value={{ quoteResponse_result_0.targetPriceMean | floatformat:2 }}>
+        </div>
+    </form>
+<!-- end form     -->
+
+<!-- start Analyst Comments container -->
+<div class="comments container borders">
+    <h6 class="center block">Analyst Comments</h6>
+    <form action="{% url 'comment' symbol=stock.symbol %}" method="post">
+        {% csrf_token %}
+        <textarea class="new_comment" name="comment">{{ stock.symbol }} Thesis:</textarea>
+        <select name="decision">
+            {% for decision in decisions %}
+                <option value="{{ decision }}">{{ decision }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Add Comment</button>
+    </form>
+    <!-- start all comments -->
+    <br>
+    <h6>Past Comments</h6>
+    {% for comment in comments reversed %}
+        <div class="borders comment">
+            <h5>{{ comment.analyst.first_name }}</h5>
+            <h6>{{ comment.created_at }}<h6>            
+            <h6><strong>Decision:</strong> {{ comment.decision }}</h6>
+            <p>{{ comment.comment }}</p>
+        </div>
+    {% endfor %}
+    <!-- end all comments -->
+</div>
+<!-- end Analyst Comments container -->
+
+<!-- start Analyster Archive container -->
+<div class="container center borders">
+    <h6 class="center block">Analyster Archive</h6>
+    <table class="table table-sm table-striped">
+        <thead>
+            <tr>
+                <th>Analyst</th>
+                <th>Archiver</th>
+                <th>Date Archived</th>
+                <th>Date Assigned</th>
+                <th>Date Presented</th>
+                <th>Decision</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for archive in archives %}
+                <tr>
+                    <td><a href="/user/{{ archive.analyst.id}}">{{ archive.analyst.first_name }} {{ archive.analyst.last_name }}</a></td>
+                    <td><a href="/user/{{ archive.analyst.id}}"></a>{{ archive.archiver.first_name }} {{ archive.archiver.last_name }}</a></td>
+                    <td>{{ archive.created_at }}</td>
+                    <td>{{ archive.date_assigned }}</td>
+                    <td>{{ archive.date_presented }}</td>
+                    <td>{{ archive.decision }}</td>
+                    <td>{{ archive.notes }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- start Analyster Archive container -->
+
+{% endblock %}
+

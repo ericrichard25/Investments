@@ -1,0 +1,62 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'website/css/investing_philosophy.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/performance.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h5>Performance</h5>
+    <p>From time to time, we submit some of our research to the investing platform Seeking Alpha. In the table below, you can see the performance of our Top Idea selections from the date of publication.
+    </p> 
+    <p>Additionally, a more complete list of our stock recommendations and performance can be seen on the website TipRanks, where we have (as of 2/19/21) a 5-star rating, a 1-yr approximate return of 30%, and are ranked #319 out of 7,943 Bloggers and #1,060 out of 15,272 analysts overall.
+    </p>    
+    <table class="table table-striped table-hover table-sm center">
+        <caption>
+            Top Idea Performance (as of 2/19/21)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Our individual portfolio weights range from 1% to 3%, with 3% being reserved for our highest conviction stocks.  
+        </caption>
+        <thead class="thead-light">
+            <tr>
+                <th>Symbol</th>
+                <th>Portfolio Weight*</th>
+                <th>Publication Date</th>
+                <th>Publication Price</th>
+                <th><span title="The date the stock traded at the highest price after article publication (for our successful picks)">Peak Date</span></th>
+                <th>Peak Price</th>
+                <th>Peak Return</th>
+                <th>Days</th>
+                <th>Years</th>
+                <th>Annualized Returned</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for top_idea in top_ideas %}
+                <tr>
+                    <td>{{ top_idea.symbol.symbol }}</td>
+                    <td>{{ top_idea.weight | floatformat:1 }}%</td>
+                    <td>{{ top_idea.publication_date }}</td>
+                    <td>${{ top_idea.publication_price }}</td>
+                    <td>{{ top_idea.peak_date }}</td>
+                    <td>${{ top_idea.peak_price }}</td>
+                    {% if top_idea.peak_return > 0 %}
+                    <td class="postive_return">{{ top_idea.peak_return | floatformat:0 }}%</td>
+                    {% elif top_idea.peak_return < 0 %}
+                    <td class="negative_return">{{ top_idea.peak_return | floatformat:0 }}%</td>
+                    {% else %}
+                    <td>{{ top_idea.peak_return | floatformat:0 }}%</td>
+                    {% endif %}
+                    <td>{{ top_idea.days }}</td>
+                    <td>{{ top_idea.years | floatformat:1 }}</td>
+                    {% if top_idea.annualized_return > 0 %}
+                    <td class="postive_return">{{ top_idea.annualized_return | floatformat:0 }}%</td>
+                    {% elif top_idea.annualized_return < 0 %}
+                    <td class="negative_return">{{ top_idea.annualized_return | floatformat:0 }}%</td>
+                    {% else %}
+                    <td>{{ top_idea.annualized_return | floatformat:0 }}%</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

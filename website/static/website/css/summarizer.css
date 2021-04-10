@@ -1,0 +1,102 @@
+/* general css */
+
+/* header css */
+
+.header{
+    display: flex;
+    height: auto;
+    justify-content: space-between;
+    align-items: end;
+    padding: 0% 3%;
+    border-bottom: 1px solid black;
+}
+
+.header_left{
+    font-size: 35px;
+    display: inline-block;
+    color: inherit;
+}
+
+.header_right{
+    color: inherit;
+    text-align: right;
+}
+
+.go_to{
+    display: inline-block;
+}
+
+.header_right a{
+    margin-right: 0.5%;
+    text-decoration: none;
+}
+
+.logo{
+    width: 10%;
+}
+
+/* main css */
+
+.stock_panel_header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.filter{
+    position:absolute;
+    border: solid 1px;
+    top : 20px;
+    background-color : white;
+    width:100px;
+    right:0;
+    display:none;
+  }
+
+  .grid{
+      /* color: red; */
+  }
+
+.invisible{
+    visibility: hidden;
+}
+
+.stock_container_header{
+    display: inline-block;
+}
+
+.stock_container_header form{
+    display: inline-block;
+}
+
+.stock_container_header a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.user_container_form{
+    width: 30%;
+}
+
+.user_content{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.user table{
+    width: 70%;
+}
+
+.quintile_weights input{
+    width: 5%;
+}
+
+.quintile_tables{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.quintile table{
+    display: inline-block;
+    width: auto;
+}
+

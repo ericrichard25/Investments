@@ -1,0 +1,24 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'website/css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+    <img class="main_img" src="{% static 'website/images/grapes.jpeg' %}"> 
+    <div class="main_right">
+        <h5 class="main_right_title">
+            An Unconventional Approach To Equity Investing
+        </h5>
+        <p class="main_right_text">
+            Invesments is a small “family&friends” office that primarily invests in securities trading on the US exchanges. We invest across all sectors of the economy, without any a-priori weight allocation.
+            <br>
+            <br>
+            Our portfolio return objectives are to maximize long-term growth – in short, beating the overall market over the long-term. Over any shorter period, we are not tied down to a specific index, nor are we trying to be market-neutral or achieve a minimum absolute return.
+            <br>
+            <br>
+            We attempt to achieve these objectives through our overarching investing philosophy, “Adaptive Harvesting,” which attempts to remedy some of the shortcomings of Modern Portfolio Theory and its variants.
+        </p>
+    </div>
+{% endblock %}

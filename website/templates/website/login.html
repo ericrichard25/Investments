@@ -1,0 +1,38 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'website/css/investing_philosophy.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/performance.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/internships.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/contact.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h5>Login</h5>
+<div class="login_container borders center">
+    {% if messages  %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <label for="email">Email</label>
+        <br>
+            <input type="text" name="email" required>
+        <br>
+        <label for="password">Password</label>
+        <br>
+            <input type="text" name="password" required>
+        <br>
+        <br>
+        <!-- <label for="remember_me"><span>Remember me</span> <span><input id="remember_me" name="remember_me" type="checkbox"></span></label> -->
+        <button type="submit">Log In</button>
+    </form>
+</div>
+{% endblock %}

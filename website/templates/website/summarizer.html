@@ -1,0 +1,471 @@
+{% load static %}
+{% load humanize %}
+{% load phonenumber_filters %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Investments</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <!-- for bootstrap datatables -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+        <!-- end bootstrap datatables -->
+        <!-- need to link to base.css and previous stylesheets to extend base styles across summarizer pages -->
+        <link rel="stylesheet" href="{% static 'website/css/base.css' %}">
+        <link rel="stylesheet" href="{% static 'website/css/investing_philosophy.css' %}">
+        <link rel="stylesheet" href="{% static 'website/css/performance.css' %}">
+        <link rel="stylesheet" href="{% static 'website/css/internships.css' %}">
+        <link rel="stylesheet" href="{% static 'website/css/contact.css' %}">
+        <link rel="stylesheet" href="{% static 'website/css/login.css' %}">
+        <link rel="stylesheet" href="{% static 'website/css/summarizer.css' %}">
+        {% block styles %}
+        {% endblock %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+        </script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- start header -->
+        <div class="header">
+            <a href="{% url 'summarizer' %}"><h5 href="/" class="header_left">Summarizer</h5></a>
+            <div class="header_right">
+                <form class="go_to" action="{% url 'go_to' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Go To</button>
+                    <input type="text" name="symbol">
+                </form>
+                <!-- <img class="logo" src="{% static 'website/images/logo.png' %}"> -->
+                <p>Logo</p>
+                <a href="{% url 'logout' %}">Log Out</a>
+                <h6>User: {{ user.first_name }} | Permission: {{ user.permission }}</h6>
+            </div>
+        </div>
+        <!-- end header -->
+
+    <div class="main">
+    {% block content %}
+
+    <!-- start User Panel -->
+    {% ifequal user.permission "administrator" %}
+    <div class="user container borders">
+        <h6 class="center block">User Panel</h6>
+        {% if messages  %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="user_content center">
+        <div class="user_container_form">  
+            <form action="{% url 'add_user' %}" method="post">
+                {% csrf_token %}
+                <table>
+                    <thead></thead>
+                    <tbody>
+                        <tr>
+                            <td><label for="first_name">First Name</label></td>
+                            <td><input type="text" name="first_name"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="last_name">Last Name</label>
+                            </td>
+                            <td><input type="text" name="last_name">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="email">Email</label>
+                            </td>
+                            <td><input type="text" name="email"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="phone">Phone</label>
+                            </td>
+                            <td><input type="text" name="phone"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="permission">Permission</label>
+                            </td>
+                            <td><select name="permission">
+                                <option value="analyst">analyst</option>
+                                {% for permission in permissions %}
+                                    {% ifequal permission "analyst" %}
+                                    <!-- display nothing -->
+                                    {% else %}
+                                        <option value={{ permission }}>{{ permission }}</option>
+                                    {% endifequal %}
+                                {% endfor %}
+                            </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="password">Password (.)</label>
+                            </td>
+                            <td><input type="text" name="password"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="confirm_pw">Confirm PW (.)</label></td>
+                            </td>
+                            <td><input type="text" name="confirm_pw" id="confirm_pw">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><button type="submit">Add User</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+            <table class="table table-sm table-striped dataTable">
+                <thead>
+                    <tr>
+                        <th>Delete</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Permission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <th><a href="{% url 'delete_user' id=user.id %}"><button>Delete</button></a></th>
+                            <td><a href="/user/{{ user.id}}">{{ user.first_name }} {{ user.last_name }}</a></td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.phone }}</td>
+                            <td>{{ user.permission }}</td>
+                        </tr>
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endifequal %}
+    <!-- end User Panel -->
+
+    <!-- start Analyster Panel -->
+    <div class="container borders">
+        <!-- analyster container header -->
+        <div class="stock_panel_header">
+            <div>
+                <form action="{% url 'nav' %}" method="post">
+                    {% csrf_token %}
+                    <label for="nav">NAV:&nbsp$&nbsp</label><input type="text" name="nav" placeholder={{ nav }}>
+                    <button type="submit">New NAV</button>
+                </form>
+            </div>
+            <h6 class="center">Analyster Panel</h6>
+
+            <!-- inivisble element of same width as NAV form to help center container title -->
+            <div class="invisible">
+                <form>
+                    <label for="NAV">NAV:&nbsp$&nbsp</label><input type="text" value={{ nav }}>
+                    <button type="submit">New NAV</button>
+                </form>
+            </div>
+        </div> <!-- end analyster container header -->
+        <!-- assignment buttons -->
+        <div class="stock_container_header">
+            {% if messages  %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <!-- this delete button for batch delete may need its own path since the one next to each symbol goes to 'delete/symbol'  -->
+            <form action="{% url 'batch_delete' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Temp Batch Delete Button</button>
+            </form>
+            <button><a href="{% url 'loader' %}">Loader</a></button>
+            <form action="{% url 'add_stock' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Add Stocks</button>
+                <input type="text" name="symbol">(use spaces to separate symbols)
+            </form>
+            <br>
+            <!-- batch assign -->
+            <form action="{% url 'batch_assign' %}" method="post">
+                {% csrf_token %}
+                <label for="from">From
+                    <select name="from">
+                        {% for analyst in analysts %}
+                            <option value={{ analyst.id }}>{{ analyst.first_name }} {{ analyst.last_name }}</option>
+                        {% endfor %}
+                    </select></label>
+                <label for="to">To
+                    <select name="to">
+                        {% for analyst in analysts %}
+                            <option value={{ analyst.id }}>{{ analyst.first_name }} {{ analyst.last_name }}</option>
+                        {% endfor %}
+                    </select></label>
+                <button>Batch Assign</button>
+            </form>
+            <!-- end batch assign -->
+
+            <!-- individual assign -->
+            <form id="checked_stocks" method="post">
+            {% csrf_token %}
+            <label for="individual_assign">To
+                <select name="to_analyst">
+                    {% for analyst in analysts %}
+                        <option value={{ analyst.id }}>{{ analyst.first_name }} {{ analyst.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit" formaction="{% url 'individual_assign' %}">Individual Assign</button>
+            <label for="set_priority">Priority
+                <select name="priority">
+                    {% for priority in priorities %}
+                        <option value={{ priority }}>{{ priority }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit" formaction="{% url 'set_priority' %}">Individual Set Priority</button>
+            </form>
+            <!-- end individual assign -->
+        </div>
+        <!-- end assignment buttons -->
+
+        <!-- analyster table section -->
+        <div class="stock_list">
+        <!-- column selector for table search -->
+        <select id="analysterColumnSelector" onchange='analysterSearchColumn()'>
+            <option value="2">Symbol</option>
+            <option value="4">Analyst</option>
+        </select>
+        <input type="text" id="analysterSearchTerm" placeholder="search by column"/>
+        <button onclick='clearFilters()'>Clear Filters</button>
+        <!-- end column selector for table search -->
+        <table class="table table-sm table-striped grid" id="analysterTable">
+            <caption>* number of stocks or assignments for the given priority or analyst</caption>
+                <thead>
+                    <tr>
+                        <th index=0>Delete<div class="filter"></div></th>
+                        <th index=1><input type="checkbox" id="selectAll"/><div class="filter"></div>
+                        </th>
+                        <th index=2>Symbol<div class="filter"></div></th>
+                        <th index=3>Priority(*)<div class="filter"></div></th>
+                        <th index=4>Analyst(*)<div class="filter"></div></th>
+                        <th index=5>Previous Analyst(*)<div class="filter"></div></th>
+                        <th index=6>Date Assigned<div class="filter"></div></th>
+                        <th index=7>Date Presented<div class="filter"></div></th>
+                        <th index=8>Decision<div class="filter"></div></th>
+                        <th index=9>Notes<div class="filter"></div></th>
+                        <th index=10>Save<div class="filter"></div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in stocks %}
+                        <tr>
+                            <td>
+                                <form action="{% url 'delete_stock' id=stock.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                            <td><input type="checkbox"
+                                form="checked_stocks"
+                                name="checked_stocks"
+                                value={{ stock.id }}></td>
+                            <td><a href="{% url 'symbol' symbol=stock.symbol %}">{{ stock.symbol }}</a></td>
+                            <!-- start priority -->
+                            {% if stock.assigned.priority or stock.assigned.priority == 0 %}
+                                {% for key, value in priority_count.items %}
+                                {% ifequal key stock.assigned.priority %}
+                                    <td>{{ stock.assigned.priority }} ({{ value }})</td>
+                                {% endifequal %}
+                            {% endfor %}
+                            <!-- display nothing if no priority -->
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                            <!-- end priority -->
+                            <!-- analyst (number of assignments) -->
+                            {% if stock.assigned.analyst %}
+                                {% for user in users %}
+                                    {% ifequal stock.assigned.analyst.id user.id %}
+                                        <td><a href="/user/{{ stock.assigned.analyst.id}}">{{ stock.assigned.analyst.first_name }} ({{ user.assigned_stocks }})</a></td>
+                                    {% endifequal %}
+                                {% endfor %}
+                            <!-- display nothing if not assigned -->
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                            <!-- end analyst (number of assignments) -->
+                            <!-- previous analyst (number of assignments) -->
+                            {% if stock.assigned.previous_analyst %}
+                                {% for user in users %}
+                                    {% ifequal stock.assigned.previous_analyst.id user.id %}
+                                        <td><a href="/user/{{ stock.assigned.previous_analyst.id}}">{{ stock.assigned.previous_analyst.first_name }} ({{ user.assigned_stocks }})</a></td>
+                                    {% endifequal %}
+                                {% endfor %}
+                            <!-- display nothing if not previously assigned -->
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                            <!-- end previous analyst (number of assignments) -->
+                            <!-- start date assigned -->
+                            <td>{{ stock.assigned.date_assigned }}</td>
+                            <!-- end date assigned -->
+                            <form method="post">
+                                {% csrf_token %}
+                                <td><input type="date" name="date_presented" value="{{ stock.assigned.date_presented|date:"Y-m-d" }}"></td>
+                                <td><select name="decision">
+                                    <option defaultValue="{{ stock.assigned.decision }}">{{ stock.assigned.decision }}</option>{% for decision in decisions %}{% ifequal decision stock.assigned.decision %}
+                                    <!-- do nothing -->
+                                    {% else %}
+                                        <!-- need quotes around the variable or else it cuts off string after space -->
+                                        <option value="{{ decision }}">{{ decision }}</option>
+                                    {% endifequal %}
+                                {% endfor %}</select></td>
+                                <td><input type="text" name="notes" placeholder="{{ stock.assigned.notes }}"></input></td>
+                                <td><button type="submit" formaction="{% url 'analyster_update' id=stock.id %}">Save</button></td>
+                            </form>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- end analyster table section -->
+    </div>
+    <!-- end Analyster Panel -->
+
+    <!-- start Quintile Panel -->
+    <div class="quintile container borders">
+    <div class="quintile_list">
+        <!-- start container header -->
+    <div class="stock_panel_header">
+        <div>
+            <form action="{% url 'nav' %}" method="post">
+                {% csrf_token %}
+                <label for="nav">NAV:&nbsp$&nbsp</label><input type="text" name="nav" placeholder={{ nav }}>
+                <button type="submit">New NAV</button>
+            </form>
+        </div>
+        <h6 class="center">Quintile Panel</h6>
+
+        <!-- inivisble element of same width as NAV form to help center container title -->
+        <div class="invisible">
+            <form>
+                <label for="NAV">NAV:&nbsp$&nbsp</label><input type="text" placeholder={{ nav }}>
+                <button type="submit">New NAV</button>
+            </form>
+        </div>
+            <!-- end inivisble element -->
+    </div> <!-- end container header -->
+
+    <!-- start quintile weights  -->
+    <div class="quintile_weights">  
+        <form action="{% url 'quintile_weights' %}" method="post">
+            {% csrf_token %}
+            {% for quintile in quintiles %}
+                <label for={{ quintile.quintile }}>Q{{ quintile.quintile }}</label>
+                    <input type="number" step="0.01" min=0 name={{ quintile.quintile }} placeholder={{ quintile.weight }}>
+            {% endfor %}
+            <button type="submit">Update Quintiles</button>
+        </form>
+    </div>
+    <!-- end quintile weights -->
+
+    <!-- start quintile tables -->
+    <div class="quintile_tables">
+        {% for quintile in quintiles %}
+            {% if quintile.id != 6 %}
+                <table class="table table-sm table-striped table-hover borders">
+                    <caption>Quintile {{ quintile }} ({{ quintile.weight }}%)</caption>
+                    <thead>
+                        <th>Stock</th>
+                        <th>Target Position</th>
+                    </thead>
+                    <tbody>
+                        {% for stock in stocks %}
+                            {% if stock.quintile == quintile %}
+                        <tr>
+                            <td><a href="{% url 'symbol' symbol=stock.symbol %}">{{ stock.symbol }}</a></td>
+                            <td>${{ stock.target_position|floatformat:0|intcomma }}</td>
+                        </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}    
+        {% endfor %}
+    </div>
+    <!-- end quintile tables -->
+
+    <!-- start quintiles (all stocks) table -->
+    <div class="stock_list">
+        <table class="table table-sm table-striped grid" id="quintilesTable">
+            <caption></caption>
+                <thead>
+                    <tr>
+                        <th index=0>Delete<div class="filter"></div></th>
+                        <th index=1><input type="checkbox" id="selectAll"/><div class="filter"></div>
+                        </th>
+                        <th index=2>Symbol<div class="filter"></div></th>
+                        <th index=3>Price<div class="filter"></div></th>
+                        <th index=4>First PT<div class="filter"></div></th>
+                        <th index=5>First Upside<div class="filter"></div></th>
+                        <th index=6>Consensus PT<div class="filter"></div></th>
+                        <th index=7>Consensus Upside<div class="filter"></div></th>
+                        <th index=8>Analysis Date<div class="filter"></div></th>
+                        <th index=9>Analysis Price<div class="filter"></div></th>
+                        <th index=10>Quintile<div class="filter"></div></th>
+                        <th index=11>Weight<div class="filter"></div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in stocks %}
+                        <tr>
+                            <td>
+                                <form action="{% url 'delete_stock' id=stock.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                            <td><input type="checkbox"
+                                form="checked_stocks"
+                                name="checked_stocks"
+                                value={{ stock.id }}></td>
+                            <td><a href="{% url 'symbol' symbol=stock.symbol %}">{{ stock.symbol }}</a></td>
+                            <td>${{ stock.price }}</td>
+                            <td>${{ stock.first_pt }}</td>
+                            <td>%{{ stock.first_upside }}</td>
+                            <td>${{ stock.consensus_pt }}</td>
+                            <td>%{{ stock.consensus_upside }}</td>
+                            <td>{{ stock.analysis_date }}</td>
+                            <td>${{ stock.analysis_price }}</td>
+                            <td>{{ stock.quintile }}</td>
+                            <td>%{{ stock.weight }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    <!-- end all stocks table -->
+</div>
+    </div>
+    <!-- end Quintile Panel -->
+{% endblock %}
+</div>
+    <!-- for bootstrap datatables -->
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+    <!-- end bootstrap datatables -->
+    <script type="text/javascript" src="{% static 'website/js/script.js' %}"></script>
+    </body>
+</html>

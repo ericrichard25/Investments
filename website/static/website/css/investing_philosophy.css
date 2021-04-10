@@ -1,0 +1,15 @@
+.main{
+    display: block;
+    margin-bottom: auto;
+    flex: 1 0 auto;
+}
+
+.main ul li{
+    list-style-type: square;
+    /* font-size: 10px; */
+    margin-top: 1%;
+}
+
+.main ul li:first-child{
+    margin-top: 0%;
+}

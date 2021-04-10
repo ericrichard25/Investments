@@ -1,0 +1,1 @@
+ForeignKey(User, related_name="assigned_stocks", on_delete=models.SET_NULL

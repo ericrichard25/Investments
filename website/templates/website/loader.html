@@ -1,0 +1,69 @@
+{% extends "website/summarizer.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'website/css/symbol.css' %}">
+    <link rel="stylesheet" href="{% static 'website/css/upload.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="user container borders">
+    <h6 class="container_title">User Panel</h6>
+    {% if messages  %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %} 
+<form action="{% url 'batch_delete' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Temporary Batch Delete Button</button>
+</form>
+<form action="{% url 'upload' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="file1"> Upload a file</label>
+    <input type="file" id="file1" name="file">
+    <small>Only accepts CSV files</small>
+    <button type="submit">Stock Upload</button>
+</form>
+</div>
+<h3>tables just for checking loading function</h3>
+{% for stock in stocks %}
+<table class="table">
+    <thead>
+        <th>symbol</th>
+        <th>first_pt</th>
+        <th>consensus_pt</th>
+        <th>analysis_date</th>
+        <th>analysis_price</th>
+        <th>summary</th>
+        <th>created_at</th>
+        <th>updated_at</th>
+        <th>analyst_id</th>
+        <th>quintile_id</th>
+        <th>price</th>
+        <th>last_price</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{stock.symbol}}</td>
+            <td>{{stock.first_pt}}</td>
+            <td>{{stock.consensus_pt}}</td>
+            <td>{{stock.analysis_date}}</td>
+            <td>{{stock.analysis_price}}</td>
+            <td>{{stock.summary}}</td>
+            <td>{{stock.created_at}}</td>
+            <td>{{stock.updated_at}}</td>
+            <td>{{stock.analyst_id}}</td>
+            <td>{{stock.quintile_id}}</td>
+            <td>{{stock.price}}</td>
+            <td>{{stock.last_price}}</td>
+        </tr>
+    </tbody>
+</table>
+<p>{{stock.summary}}</p>
+{% endfor %}
+
+{% endblock %}
+
