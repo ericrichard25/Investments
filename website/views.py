@@ -19,6 +19,11 @@ from django.contrib import messages
 # for converting yfinance timestamp of earningsDate to string
 from datetime import datetime, date
 
+# for get_new_user view
+from django.http import JsonResponse
+import json
+from django.core.serializers import serialize
+
 # permissions array to pass to summarizer.html and user.html
 permissions = ["administrator", "analyst", "maintainer", "viewer"]
 
@@ -63,13 +68,20 @@ def add_stock(request):
 def add_user(request):
     if(not User.objects.isAdmin(request.session['id'])):
         messages.error(request, "Permission denied")
+        return redirect("/summarizer")
     else:
         errors = User.objects.add_validator(request.POST)
         if len(errors) > 0:
             for key, value in errors.items():
                 messages.error(request, value)
-            return redirect("/summarizer")
+            context = {
+                "users": User.objects.all()
+            }
+            messages.error(request, f"New user { new_user.first_name } { new_user.last_name } has been created.")
+            return render(request, "website/users_table.html", context)
         else:
+            user = User.objects.get(id=request.session['id'])
+            logged_in = True
             pw_hash = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt()).decode()
             new_user = User.objects.create(
                 first_name = request.POST['first_name'],
@@ -79,7 +91,12 @@ def add_user(request):
                 password = pw_hash,
                 permission = request.POST['permission'],
             )
-    return redirect("/summarizer")
+            context = {
+                "user": user,
+                "users": User.objects.all()
+            }
+            messages.error(request, f"New user { new_user.first_name } { new_user.last_name } has been created.")
+            return render(request, "website/user_panel.html", context)
 # end add_user
 
 def analyster_update(request, id):
@@ -234,6 +251,18 @@ def delete_user(request, id):
             messages.error(request, f"User { deleted_user } has been deleted")
             return redirect("/summarizer")
 # end delete_user
+
+def get_new_user(request):
+    if request.method == "GET":
+        new_user = User.objects.latest('created_at')
+        new_user_object = {
+            "first_name": new_user.first_name,
+            "last_name": new_user.last_name,
+        }
+        return JsonResponse(new_user_object, safe=False)
+    else:
+        return HttpResponse("Request method not valid")
+# end get_new_user()
 
 def go_to(request):
     errors = {}

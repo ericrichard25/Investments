@@ -30,6 +30,7 @@
         {% endblock %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
         </script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -56,10 +57,10 @@
     <div class="main">
     {% block content %}
 
+    <button><h5 id="user_panel_label" class="toggle_button">User Panel</h5></button>
     <!-- start User Panel -->
     {% ifequal user.permission "administrator" %}
-    <div class="user container borders">
-        <h6 class="center block">User Panel</h6>
+    <div id="user_panel" class="user container borders toggle">
         {% if messages  %}
         <ul class="messages">
             {% for message in messages %}
@@ -128,7 +129,8 @@
                 </table>
             </form>
         </div>
-            <table class="table table-sm table-striped dataTable">
+            <!-- start users_table . . . reload from users_table.html on form submission -->
+            <table id="users_table"class="table table-sm table-striped dataTable">
                 <thead>
                     <tr>
                         <th>Delete</th>
@@ -150,32 +152,30 @@
                         {% endfor %}
                 </tbody>
             </table>
+            <!-- end users_table -->
         </div>
+        <!-- start user panel close buttons -->
+        <div class="close_buttons">
+            <button><h6 class="toggle_button user_panel_close">Close</h6></button>
+            <button><h6 class="toggle_button user_panel_close">Close</h6></button>
+        </div>
+        <!-- end user panel close buttons -->
     </div>
     {% endifequal %}
     <!-- end User Panel -->
 
+    <button><h5 id="analyster_panel_label" class="toggle_button">Analyster Panel</h5></button>
     <!-- start Analyster Panel -->
-    <div class="container borders">
-        <!-- analyster container header -->
-        <div class="stock_panel_header">
-            <div>
-                <form action="{% url 'nav' %}" method="post">
-                    {% csrf_token %}
-                    <label for="nav">NAV:&nbsp$&nbsp</label><input type="text" name="nav" placeholder={{ nav }}>
-                    <button type="submit">New NAV</button>
-                </form>
-            </div>
-            <h6 class="center">Analyster Panel</h6>
-
-            <!-- inivisble element of same width as NAV form to help center container title -->
-            <div class="invisible">
-                <form>
-                    <label for="NAV">NAV:&nbsp$&nbsp</label><input type="text" value={{ nav }}>
-                    <button type="submit">New NAV</button>
-                </form>
-            </div>
-        </div> <!-- end analyster container header -->
+    <div id="analyster_panel" class="container borders toggle">
+        <!-- start NAV row -->
+        <div>
+            <form action="{% url 'nav' %}" method="post">
+                {% csrf_token %}
+                <label for="nav">NAV:&nbsp$&nbsp</label><input type="text" name="nav" placeholder={{ nav }}>
+                <button type="submit">New NAV</button>
+            </form>
+        </div>
+        <!-- end NAV row -->
         <!-- assignment buttons -->
         <div class="stock_container_header">
             {% if messages  %}
@@ -341,14 +341,19 @@
             </table>
         </div>
         <!-- end analyster table section -->
+        <!-- start analyster panel close buttons -->
+        <div class="close_buttons">
+            <button><h6 class="toggle_button analyster_panel_close">Close</h6></button>
+            <button><h6 class="toggle_button analyster_panel_close">Close</h6></button>
+        </div>
+        <!-- end analyster panel close buttons -->
     </div>
     <!-- end Analyster Panel -->
 
+    <button><h5 id="quintile_panel_label" class="toggle_button">Quintile Panel</h5></button>
     <!-- start Quintile Panel -->
-    <div class="quintile container borders">
+    <div id="quintile_panel" class="quintile container borders toggle">
     <div class="quintile_list">
-        <!-- start container header -->
-    <div class="stock_panel_header">
         <div>
             <form action="{% url 'nav' %}" method="post">
                 {% csrf_token %}
@@ -356,18 +361,6 @@
                 <button type="submit">New NAV</button>
             </form>
         </div>
-        <h6 class="center">Quintile Panel</h6>
-
-        <!-- inivisble element of same width as NAV form to help center container title -->
-        <div class="invisible">
-            <form>
-                <label for="NAV">NAV:&nbsp$&nbsp</label><input type="text" placeholder={{ nav }}>
-                <button type="submit">New NAV</button>
-            </form>
-        </div>
-            <!-- end inivisble element -->
-    </div> <!-- end container header -->
-
     <!-- start quintile weights  -->
     <div class="quintile_weights">  
         <form action="{% url 'quintile_weights' %}" method="post">
@@ -458,7 +451,13 @@
         </div>
     <!-- end all stocks table -->
 </div>
+    <!-- start quintile panel close buttons -->
+    <div class="close_buttons">
+        <button><h6 class="toggle_button quintile_panel_close">Close</h6></button>
+        <button><h6 class="toggle_button quintile_panel_close">Close</h6></button>
     </div>
+    <!-- end quintile panel close buttons -->
+</div>
     <!-- end Quintile Panel -->
 {% endblock %}
 </div>

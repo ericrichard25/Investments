@@ -82,6 +82,11 @@
     justify-content: space-evenly;
 }
 
+.close_buttons{
+    display: flex;
+    justify-content: space-between;
+}
+
 .user table{
     width: 70%;
 }

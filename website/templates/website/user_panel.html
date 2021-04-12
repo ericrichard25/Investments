@@ -1,0 +1,99 @@
+<!-- start User Panel -->
+{% ifequal user.permission "administrator" %}
+<div id="user_panel" class="user container borders toggle">
+    {% if messages  %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="user_content center">
+    <div class="user_container_form">  
+        <form action="{% url 'add_user' %}" method="post">
+            {% csrf_token %}
+            <table>
+                <thead></thead>
+                <tbody>
+                    <tr>
+                        <td><label for="first_name">First Name</label></td>
+                        <td><input type="text" name="first_name"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="last_name">Last Name</label>
+                        </td>
+                        <td><input type="text" name="last_name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="email">Email</label>
+                        </td>
+                        <td><input type="text" name="email"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="phone">Phone</label>
+                        </td>
+                        <td><input type="text" name="phone"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="permission">Permission</label>
+                        </td>
+                        <td><select name="permission">
+                            <option value="analyst">analyst</option>
+                            {% for permission in permissions %}
+                                {% ifequal permission "analyst" %}
+                                <!-- display nothing -->
+                                {% else %}
+                                    <option value={{ permission }}>{{ permission }}</option>
+                                {% endifequal %}
+                            {% endfor %}
+                        </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="password">Password (.)</label>
+                        </td>
+                        <td><input type="text" name="password"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="confirm_pw">Confirm PW (.)</label></td>
+                        </td>
+                        <td><input type="text" name="confirm_pw" id="confirm_pw">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button type="submit">Add User</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+        <!-- start users_table . . . reload from users_table.html on form submission -->
+        <table id="users_table"class="table table-sm table-striped dataTable">
+            <thead>
+                <tr>
+                    <th>Delete</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Permission</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <th><a href="{% url 'delete_user' id=user.id %}"><button>Delete</button></a></th>
+                        <td><a href="/user/{{ user.id}}">{{ user.first_name }} {{ user.last_name }}</a></td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phone }}</td>
+                        <td>{{ user.permission }}</td>
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+        <!-- end users_table -->
+    </div>
+</div>
+{% endifequal %}
+<!-- end User Panel -->

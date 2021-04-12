@@ -14,6 +14,7 @@ urlpatterns = [
     # temp path for testing delete all stocks
     path('batch_delete', views.batch_delete, name="batch_delete"),
     path('contact', views.contact, name="contact"),	
+    path('get_new_user', views.get_new_user, name="get_new_user"),
     path('go_to', views.go_to, name="go_to"),
     path('individual_assign', views.individual_assign, name="individual_assign"), 
     path('internships', views.internships, name="internships"),
